@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+    webapp:
+        container_name: webapp
+        build: .
+        ports:
+         - 5000:5000
+    redis:
+        image: redis:alpine
+
+    nginx_server:
+        container_name: nginx_server
+        image: nginx:alpine
+        ports: 
+         - 8080:80
+        volumes:
+         - ~/presentation:/usr/share/nginx/html
+
+    nginx_proxy:
+        container_name: nginx_proxy
+        image: nginx:alpine
+        depends_on:
+         - webapp  
+         - redis
+         - nginx_server
+        ports:
+         - 80:80
+        volumes:
+         - ./nginx.conf:/etc/nginx/nginx.conf
